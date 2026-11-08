@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Broth &amp; Noodle | Build a Bowl</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <a class="logo" href="index.html">Broth <span>&amp;</span> Noodle</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="styles.html">Styles</a></li>
+        <li><a href="recipe.html">Recipe</a></li>
+        <li><a class="active" href="builder.html">Build a Bowl</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>Build your bowl</h1>
+    <p>Pick a broth, a noodle, and your toppings. We'll describe your bowl and tell you how rich it is.</p>
+  </section>
+
+  <main>
+    <form id="builder" class="panel" aria-describedby="result">
+      <fieldset>
+        <legend>1. Broth</legend>
+        <label><input type="radio" name="broth" value="shoyu" data-rich="2" checked> Shoyu (soy sauce)</label>
+        <label><input type="radio" name="broth" value="shio" data-rich="1"> Shio (salt)</label>
+        <label><input type="radio" name="broth" value="miso" data-rich="3"> Miso</label>
+        <label><input type="radio" name="broth" value="tonkotsu" data-rich="4"> Tonkotsu (pork bone)</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>2. Noodles</legend>
+        <label><input type="radio" name="noodle" value="thin and straight" checked> Thin, straight</label>
+        <label><input type="radio" name="noodle" value="thick and wavy"> Thick, wavy</label>
+      </fieldset>
+
+      <fieldset>
+        <legend>3. Toppings</legend>
+        <label><input type="checkbox" name="topping" value="a jammy egg" data-rich="1"> Jammy egg</label>
+        <label><input type="checkbox" name="topping" value="chashu pork" data-rich="2"> Chashu pork</label>
+        <label><input type="checkbox" name="topping" value="scallions" data-rich="0"> Scallions</label>
+        <label><input type="checkbox" name="topping" value="nori" data-rich="0"> Nori</label>
+        <label><input type="checkbox" name="topping" value="corn and butter" data-rich="2"> Corn &amp; butter</label>
+        <label><input type="checkbox" name="topping" value="bamboo shoots" data-rich="0"> Bamboo shoots</label>
+      </fieldset>
+    </form>
+
+    <div id="result" class="panel result" aria-live="polite">
+      <h2>Your bowl</h2>
+      <p id="summary"></p>
+      <p class="meter-label">Richness: <strong id="richness-text"></strong></p>
+      <div class="meter" role="img" aria-label="Richness meter"><div id="meter-fill"></div></div>
+      <button type="button" id="reset" class="button">Reset</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Broth &amp; Noodle &middot; Hosted on AWS S3 + CloudFront</p>
+  </footer>
+  <script src="js/main.js" defer></script>
+</body>
+</html>

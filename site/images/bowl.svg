@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-labelledby="t">
+  <title id="t">Illustration of a steaming bowl of ramen</title>
+  <rect width="400" height="300" fill="#fbf6ee"/>
+  <g fill="none" stroke="#c8402b" stroke-width="5" stroke-linecap="round" opacity="0.55">
+    <path d="M150 90 q-14 -22 0 -44 q14 -22 0 -44"/>
+    <path d="M200 90 q-14 -22 0 -44 q14 -22 0 -44"/>
+    <path d="M250 90 q-14 -22 0 -44 q14 -22 0 -44"/>
+  </g>
+  <ellipse cx="200" cy="130" rx="130" ry="34" fill="#e9b25a"/>
+  <path d="M70 130 a130 34 0 0 0 260 0 v18 a130 120 0 0 1 -260 0 z" fill="#2b211a"/>
+  <path d="M95 150 a105 110 0 0 0 210 0" fill="none" stroke="#c8402b" stroke-width="8"/>
+  <g fill="none" stroke="#f4dd9b" stroke-width="6" stroke-linecap="round">
+    <path d="M120 128 q20 -16 40 0 t40 0 t40 0"/>
+    <path d="M130 140 q20 -14 40 0 t40 0 t40 0"/>
+  </g>
+  <ellipse cx="160" cy="124" rx="26" ry="16" fill="#fff"/>
+  <ellipse cx="160" cy="124" rx="11" ry="8" fill="#f0a030"/>
+  <rect x="215" y="112" width="52" height="26" rx="10" fill="#b5694a" transform="rotate(-8 241 125)"/>
+  <circle cx="232" cy="120" r="5" fill="#6aa84f"/><circle cx="248" cy="128" r="5" fill="#6aa84f"/>
+  <rect x="285" y="96" width="9" height="86" rx="4" fill="#8a5a36" transform="rotate(22 290 140)"/>
+  <rect x="305" y="96" width="9" height="86" rx="4" fill="#8a5a36" transform="rotate(26 310 140)"/>
+  <rect x="150" y="262" width="100" height="14" rx="7" fill="#2b211a"/>
+</svg>

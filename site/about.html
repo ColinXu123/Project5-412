@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Broth &amp; Noodle | About</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <a class="logo" href="index.html">Broth <span>&amp;</span> Noodle</a>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="styles.html">Styles</a></li>
+        <li><a href="recipe.html">Recipe</a></li>
+        <li><a href="builder.html">Build a Bowl</a></li>
+        <li><a class="active" href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h1>About this site</h1>
+    <p>Broth &amp; Noodle is a small student project about ramen, built for CSCE 412 and served from a private Amazon S3 bucket through CloudFront with HTTPS.</p>
+  </section>
+
+  <main>
+    <img class="illustration" src="images/bowl.svg" alt="Illustration of a steaming bowl of ramen with an egg, pork and scallions" width="400" height="300">
+
+    <h2>How the site is hosted</h2>
+    <ul>
+      <li><strong>Amazon S3</strong> stores the files and is not publicly readable.</li>
+      <li><strong>CloudFront</strong> delivers the pages over HTTPS and is the only service allowed to read the bucket.</li>
+      <li><strong>Route 53</strong> points the domain at CloudFront.</li>
+      <li><strong>AWS Certificate Manager</strong> provides the TLS certificate.</li>
+    </ul>
+
+    <h2>Contact</h2>
+    <p>Questions about ramen? Send a note. This is a static demo form: it checks your input in the browser and does not send anything.</p>
+    <form id="contact-form" class="panel" novalidate>
+      <label for="name">Name</label>
+      <input id="name" name="name" type="text" autocomplete="name">
+      <p class="error" id="name-error" role="alert"></p>
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" autocomplete="email">
+      <p class="error" id="email-error" role="alert"></p>
+
+      <label for="message">Message (at least 10 characters)</label>
+      <textarea id="message" name="message" rows="5"></textarea>
+      <p class="error" id="message-error" role="alert"></p>
+
+      <button type="submit" class="button">Send</button>
+      <p id="form-status" class="success" role="status"></p>
+    </form>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Broth &amp; Noodle &middot; Hosted on AWS S3 + CloudFront</p>
+  </footer>
+  <script src="js/main.js" defer></script>
+</body>
+</html>
