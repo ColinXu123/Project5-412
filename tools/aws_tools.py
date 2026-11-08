@@ -39,7 +39,14 @@ class AwsTools:
         if not z:
             raise RuntimeError("No Route 53 hosted zone for domain; run ensure_hosted_zone first")
         return z["Id"].split("/")[-1]
-
+    def list_bucket_objects(self):
+        """List the keys in the site bucket (read-only)."""
+        try:
+            resp = self.s3.list_objects_v2(Bucket=self.bucket)
+            keys = [o["Key"] for o in resp.get("Contents", [])]
+            return {"count": len(keys), "keys": sorted(keys)}
+        except ClientError as e:
+            return {"error": e.response["Error"]["Code"]}
     def _find_cert_arn(self):
         pages = self.acm.get_paginator("list_certificates").paginate(
             CertificateStatuses=["PENDING_VALIDATION", "ISSUED"])

@@ -23,5 +23,6 @@ def build_validator(checker, llm, logger) -> Agent:
         make_tool(checker.check_s3_direct_denied, "Anonymous direct S3 object URL must be 403."),
         make_tool(checker.check_cloudfront_headers, "Response has CloudFront via / x-cache headers."),
         make_tool(checker.save_validation_report, "Write all recorded results to reports/validation_report.json."),
+        make_tool(checker.check_bucket_contents, "S3 bucket must contain every required page."),
     ]
     return Agent("validator", SYSTEM, tools, llm, logger)

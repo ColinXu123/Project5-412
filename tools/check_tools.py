@@ -5,12 +5,19 @@ import json
 import os
 import socket
 import ssl
+import time
 from datetime import datetime, timezone
 
+import boto3
 import dns.resolver
 import requests
 
 TIMEOUT = 15
+
+# Every one of these must have been run before a report can be saved.
+REQUIRED = ["dns_resolves", "https_domain_reachable", "http_redirects_to_https",
+            "certificate_matches_domain", "required_pages_accessible", "custom_404_page",
+            "s3_direct_access_denied", "cloudfront_serves_content", "bucket_has_site_files"]
 
 
 class Checker:
@@ -18,6 +25,16 @@ class Checker:
         self.cfg = cfg
         self.domain = cfg["domain"]
         self.results = []
+        self._remove_stale_report()      # an old report must never be mistaken for a new one
+
+    def _report_path(self):
+        return os.path.join(self.cfg.get("reports_dir", "reports"), "validation_report.json")
+
+    def _remove_stale_report(self):
+        try:
+            os.remove(self._report_path())
+        except FileNotFoundError:
+            pass
 
     def _record(self, name, passed, evidence):
         rec = {"check": name, "passed": bool(passed), "evidence": evidence,
@@ -96,6 +113,19 @@ class Checker:
         except Exception as e:
             return self._record("s3_direct_access_denied", False, {"url": url, "error": repr(e)})
 
+    # 9: the ORIGIN really holds the site files (CloudFront's cache can hide an empty bucket)
+    def check_bucket_contents(self):
+        try:
+            session = boto3.Session(profile_name=self.cfg.get("aws_profile"))
+            s3 = session.client("s3", region_name=self.cfg.get("region", "us-east-1"))
+            resp = s3.list_objects_v2(Bucket=self.cfg["bucket"])
+            keys = {o["Key"] for o in resp.get("Contents", [])}
+            missing = [p for p in self.cfg["pages"] if p not in keys]
+            return self._record("bucket_has_site_files", not missing,
+                                {"object_count": len(keys), "missing_pages": missing})
+        except Exception as e:
+            return self._record("bucket_has_site_files", False, {"error": repr(e)})
+
     # 7: content is really served by CloudFront
     def check_cloudfront_headers(self):
         try:
@@ -109,18 +139,30 @@ class Checker:
         except Exception as e:
             return self._record("cloudfront_serves_content", False, {"error": repr(e)})
 
-    # extra: DNS resolves
+    # DNS resolves. New records can take a minute or two to appear, so retry before failing.
     def check_dns(self):
-        try:
-            a = [str(x) for x in dns.resolver.resolve(self.domain, "A", lifetime=TIMEOUT)]
-            return self._record("dns_resolves", len(a) > 0, {"A": a})
-        except Exception as e:
-            return self._record("dns_resolves", False, {"error": repr(e)})
+        tries = int(self.cfg.get("dns_retries", 6))
+        delay = int(self.cfg.get("dns_retry_delay", 10))
+        last = None
+        for attempt in range(1, tries + 1):
+            try:
+                a = [str(x) for x in dns.resolver.resolve(self.domain, "A", lifetime=TIMEOUT)]
+                if a:
+                    return self._record("dns_resolves", True, {"A": a, "attempts": attempt})
+            except Exception as e:
+                last = e
+            if attempt < tries:
+                time.sleep(delay)
+        return self._record("dns_resolves", False, {"error": repr(last), "attempts": tries})
 
     def save_validation_report(self):
         """Write the recorded results (not LLM text) to reports/validation_report.json."""
+        missing = [n for n in REQUIRED if n not in {r["check"] for r in self.results}]
+        if missing:
+            return {"error": f"Report NOT saved. These checks have not been run yet: {missing}. "
+                             "Run every check, even if an earlier one failed, then save again."}
         os.makedirs(self.cfg.get("reports_dir", "reports"), exist_ok=True)
-        path = os.path.join(self.cfg.get("reports_dir", "reports"), "validation_report.json")
+        path = self._report_path()
         report = {"domain": self.domain, "generated": datetime.now(timezone.utc).isoformat(),
                   "all_passed": bool(self.results) and all(r["passed"] for r in self.results),
                   "failed_checks": [r["check"] for r in self.results if not r["passed"]],

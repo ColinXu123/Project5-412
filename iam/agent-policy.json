@@ -1,0 +1,50 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "OwnBucketOnly",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket", "s3:ListBucket", "s3:GetBucketLocation",
+        "s3:PutObject", "s3:GetObject",
+        "s3:PutBucketPublicAccessBlock", "s3:GetBucketPublicAccessBlock",
+        "s3:PutBucketOwnershipControls",
+        "s3:PutBucketPolicy", "s3:GetBucketPolicy"
+      ],
+      "Resource": ["arn:aws:s3:::BUCKET_NAME", "arn:aws:s3:::BUCKET_NAME/*"]
+    },
+    {
+      "Sid": "CloudFront",
+      "Effect": "Allow",
+      "Action": [
+        "cloudfront:CreateDistribution", "cloudfront:UpdateDistribution",
+        "cloudfront:GetDistribution", "cloudfront:GetDistributionConfig",
+        "cloudfront:ListDistributions", "cloudfront:CreateInvalidation",
+        "cloudfront:CreateOriginAccessControl", "cloudfront:ListOriginAccessControls",
+        "cloudfront:GetOriginAccessControl"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "Route53OwnZone",
+      "Effect": "Allow",
+      "Action": [
+        "route53:ChangeResourceRecordSets", "route53:ListResourceRecordSets",
+        "route53:GetHostedZone"
+      ],
+      "Resource": "arn:aws:route53:::hostedzone/HOSTED_ZONE_ID"
+    },
+    {
+      "Sid": "Route53Lookup",
+      "Effect": "Allow",
+      "Action": ["route53:ListHostedZonesByName", "route53:CreateHostedZone", "route53:GetChange"],
+      "Resource": "*"
+    },
+    {
+      "Sid": "ACM",
+      "Effect": "Allow",
+      "Action": ["acm:RequestCertificate", "acm:DescribeCertificate", "acm:ListCertificates"],
+      "Resource": "*"
+    }
+  ]
+}

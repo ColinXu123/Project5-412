@@ -54,4 +54,4 @@ def build_deployer(aws, llm, logger) -> Agent:
 
 # Tools the Diagnostician is allowed to propose as a fix
 FIXABLE_TOOLS = {"apply_oac_bucket_policy", "upsert_alias_records", "set_default_root_object",
-                 "add_cert_validation_records", "invalidate_cache", "create_distribution"}
+                 "add_cert_validation_records", "invalidate_cache", "create_distribution", "create_private_bucket", "upload_site"}
