@@ -1,0 +1,12 @@
+# No secrets in this file.
+netid: xucol000                    # <-- change me
+domain: csce412xucol000.me         # <-- change me (csce412<NetID>.me)
+bucket: csce412xucol000-site       # <-- must be globally unique
+region: us-east-1                   # bucket region (ACM cert is always us-east-1)
+aws_profile: project5              # or the name of a least-privilege profile in ~/.aws
+site_dir: site
+pages: [index.html, styles.html, recipe.html, builder.html, about.html]
+error_page: 404.html
+logs_dir: logs
+reports_dir: reports
+max_fix_attempts: 2
