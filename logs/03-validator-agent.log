@@ -1,0 +1,2656 @@
+[2026-11-09T01:30:32.890962+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T01:30:32.934473+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.32.104.91",
+            "13.32.104.14",
+            "13.32.104.68",
+            "13.32.104.66"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T01:30:32.934457+00:00"
+      }
+    }
+
+[2026-11-09T01:30:33.902491+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T01:30:34.001043+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T01:30:34.000441+00:00"
+      }
+    }
+
+[2026-11-09T01:30:34.894959+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T01:30:34.942982+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T01:30:34.942752+00:00"
+      }
+    }
+
+[2026-11-09T01:30:35.526775+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T01:30:35.583789+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T01:30:35.582760+00:00"
+      }
+    }
+
+[2026-11-09T01:30:36.673115+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T01:30:37.051043+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T01:30:37.050929+00:00"
+      }
+    }
+
+[2026-11-09T01:30:37.792334+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T01:30:37.980989+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": true,
+        "evidence": {
+          "status_code": 404,
+          "body_bytes": 972
+        },
+        "ts": "2026-11-09T01:30:37.980168+00:00"
+      }
+    }
+
+[2026-11-09T01:30:38.600194+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T01:30:38.797314+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": false,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 404
+        },
+        "ts": "2026-11-09T01:30:38.796662+00:00"
+      }
+    }
+
+[2026-11-09T01:30:39.677923+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T01:30:39.791848+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 f4500e463d00769b711d53fc3ecaa3b0.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "IAH50-P5",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T01:30:39.791530+00:00"
+      }
+    }
+
+[2026-11-09T01:30:40.667883+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T01:30:40.668775+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T01:30:41.604873+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T01:30:58.696379+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": false,
+        "evidence": {
+          "error": "NoSuchBucket('An error occurred (NoSuchBucket) when calling the ListObjectsV2 operation: The specified bucket does not exist')",
+          "attempts": 4
+        },
+        "ts": "2026-11-09T01:30:58.694475+00:00"
+      }
+    }
+
+[2026-11-09T01:30:59.430852+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T01:30:59.431624+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": false,
+        "failed_checks": [
+          "s3_direct_access_denied",
+          "bucket_has_site_files"
+        ],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T01:31:00.959453+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "3a11c0e3",
+      "sender": "validator",
+      "status": "failed",
+      "summary": "All checks except S3 direct access denial and bucket content check passed. The S3 direct access returned 404 instead of 403 and the bucket does not exist.",
+      "data": {
+        "all_passed": false,
+        "failed_checks": [
+          "s3_direct_access_denied",
+          "bucket_has_site_files"
+        ],
+        "s3_direct_access_denied": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 404
+        },
+        "bucket_has_site_files": {
+          "error": "NoSuchBucket('An error occurred (NoSuchBucket) when calling the ListObjectsV2 operation: The specified bucket does not exist')",
+          "attempts": 4
+        }
+      }
+    }
+
+[2026-11-09T01:32:02.994926+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T01:32:03.023337+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.32.104.68",
+            "13.32.104.91",
+            "13.32.104.66",
+            "13.32.104.14"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T01:32:03.023306+00:00"
+      }
+    }
+
+[2026-11-09T01:32:03.988610+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T01:32:04.088885+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T01:32:04.088552+00:00"
+      }
+    }
+
+[2026-11-09T01:32:04.731900+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T01:32:04.778070+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T01:32:04.777902+00:00"
+      }
+    }
+
+[2026-11-09T01:32:05.350333+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T01:32:05.424825+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T01:32:05.422607+00:00"
+      }
+    }
+
+[2026-11-09T01:32:06.063582+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T01:32:06.455349+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T01:32:06.455030+00:00"
+      }
+    }
+
+[2026-11-09T01:32:07.089040+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T01:32:07.287495+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": false,
+        "evidence": {
+          "status_code": 403,
+          "body_bytes": 111
+        },
+        "ts": "2026-11-09T01:32:07.286852+00:00"
+      }
+    }
+
+[2026-11-09T01:32:08.114733+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T01:32:08.323246+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 403
+        },
+        "ts": "2026-11-09T01:32:08.322575+00:00"
+      }
+    }
+
+[2026-11-09T01:32:09.136755+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T01:32:09.215400+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 e2004be170e06bb135773e18f5d504b8.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "IAH50-P5",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T01:32:09.214886+00:00"
+      }
+    }
+
+[2026-11-09T01:32:10.161854+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T01:32:10.162752+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T01:32:10.770969+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T01:32:27.156952+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": false,
+        "evidence": {
+          "object_count": 0,
+          "missing_pages": [
+            "index.html",
+            "styles.html",
+            "recipe.html",
+            "builder.html",
+            "about.html"
+          ],
+          "attempts": 4
+        },
+        "ts": "2026-11-09T01:32:27.153801+00:00"
+      }
+    }
+
+[2026-11-09T01:32:27.775595+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T01:32:27.777787+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": false,
+        "failed_checks": [
+          "custom_404_page",
+          "bucket_has_site_files"
+        ],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T01:32:29.103244+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "fb80a8a4",
+      "sender": "validator",
+      "status": "failed",
+      "summary": "Validation failed due to missing expected pages in the bucket and incorrect HTTP status for the custom 404 page.",
+      "data": {
+        "all_passed": false,
+        "failed_checks": [
+          "custom_404_page",
+          "bucket_has_site_files"
+        ],
+        "custom_404_page": {
+          "status_code": 403,
+          "body_bytes": 111
+        },
+        "bucket_has_site_files": {
+          "object_count": 0,
+          "missing_pages": [
+            "index.html",
+            "styles.html",
+            "recipe.html",
+            "builder.html",
+            "about.html"
+          ],
+          "attempts": 4
+        }
+      }
+    }
+
+[2026-11-09T01:33:56.861799+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T01:33:56.901167+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.32.104.14",
+            "13.32.104.91",
+            "13.32.104.68",
+            "13.32.104.66"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T01:33:56.901131+00:00"
+      }
+    }
+
+[2026-11-09T01:33:57.521695+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T01:33:57.623593+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T01:33:57.622907+00:00"
+      }
+    }
+
+[2026-11-09T01:33:58.399206+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T01:33:58.450357+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T01:33:58.450235+00:00"
+      }
+    }
+
+[2026-11-09T01:33:59.393173+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T01:33:59.454197+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T01:33:59.453104+00:00"
+      }
+    }
+
+[2026-11-09T01:34:00.139873+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T01:34:00.506890+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T01:34:00.506789+00:00"
+      }
+    }
+
+[2026-11-09T01:34:01.575529+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T01:34:01.767964+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": false,
+        "evidence": {
+          "status_code": 403,
+          "body_bytes": 111
+        },
+        "ts": "2026-11-09T01:34:01.767733+00:00"
+      }
+    }
+
+[2026-11-09T01:34:02.804180+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T01:34:03.010320+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 403
+        },
+        "ts": "2026-11-09T01:34:03.009666+00:00"
+      }
+    }
+
+[2026-11-09T01:34:03.727372+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T01:34:03.811958+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 f4500e463d00769b711d53fc3ecaa3b0.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "IAH50-P5",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T01:34:03.811369+00:00"
+      }
+    }
+
+[2026-11-09T01:34:04.645170+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T01:34:04.645873+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T01:34:05.304964+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T01:34:05.887530+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": true,
+        "evidence": {
+          "object_count": 9,
+          "missing_pages": [],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T01:34:05.884019+00:00"
+      }
+    }
+
+[2026-11-09T01:34:06.498990+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T01:34:06.499620+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": false,
+        "failed_checks": [
+          "custom_404_page"
+        ],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T01:34:07.921617+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "b80f2400",
+      "sender": "validator",
+      "status": "failed",
+      "summary": "All validation checks passed except the custom 404 page which did not return the expected 404 status with a custom error page.",
+      "data": {
+        "all_passed": false,
+        "failed_checks": [
+          "custom_404_page"
+        ],
+        "custom_404_page": {
+          "status_code": 403,
+          "body_bytes": 111
+        }
+      }
+    }
+
+[2026-11-09T01:34:48.108776+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T01:34:48.160962+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.32.104.66",
+            "13.32.104.14",
+            "13.32.104.91",
+            "13.32.104.68"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T01:34:48.160943+00:00"
+      }
+    }
+
+[2026-11-09T01:34:48.705678+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T01:34:48.780648+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T01:34:48.780409+00:00"
+      }
+    }
+
+[2026-11-09T01:34:49.403775+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T01:34:49.466647+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T01:34:49.466173+00:00"
+      }
+    }
+
+[2026-11-09T01:34:50.215768+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T01:34:50.291520+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T01:34:50.289002+00:00"
+      }
+    }
+
+[2026-11-09T01:34:50.879251+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T01:34:51.258225+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T01:34:51.257758+00:00"
+      }
+    }
+
+[2026-11-09T01:34:52.166093+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T01:34:52.366703+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": true,
+        "evidence": {
+          "status_code": 404,
+          "body_bytes": 972
+        },
+        "ts": "2026-11-09T01:34:52.365948+00:00"
+      }
+    }
+
+[2026-11-09T01:34:53.085743+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T01:34:53.303512+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 403
+        },
+        "ts": "2026-11-09T01:34:53.302856+00:00"
+      }
+    }
+
+[2026-11-09T01:34:54.007730+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T01:34:54.095837+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 4ffc0a0ea99f8764475b9408a0fdca4a.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "IAH50-P5",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T01:34:54.095526+00:00"
+      }
+    }
+
+[2026-11-09T01:34:54.751476+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T01:34:54.751816+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T01:34:55.409913+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T01:34:55.786091+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": true,
+        "evidence": {
+          "object_count": 9,
+          "missing_pages": [],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T01:34:55.784869+00:00"
+      }
+    }
+
+[2026-11-09T01:34:56.562330+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T01:34:56.563401+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": true,
+        "failed_checks": [],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T01:34:57.281401+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "2e8c7ac2",
+      "sender": "validator",
+      "status": "success",
+      "summary": "All validation checks passed successfully, and the report was saved.",
+      "data": {
+        "all_passed": true,
+        "failed_checks": []
+      }
+    }
+
+[2026-11-09T04:56:59.556339+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T04:56:59.678421+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.225.222.97",
+            "13.225.222.107",
+            "13.225.222.106",
+            "13.225.222.49"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T04:56:59.678354+00:00"
+      }
+    }
+
+[2026-11-09T04:57:00.668534+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T04:57:00.918710+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T04:57:00.918463+00:00"
+      }
+    }
+
+[2026-11-09T04:57:01.885338+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T04:57:01.918819+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T04:57:01.918672+00:00"
+      }
+    }
+
+[2026-11-09T04:57:02.979762+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T04:57:03.074374+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T04:57:03.070076+00:00"
+      }
+    }
+
+[2026-11-09T04:57:04.081306+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T04:57:04.723356+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T04:57:04.723241+00:00"
+      }
+    }
+
+[2026-11-09T04:57:05.610242+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T04:57:05.851333+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": true,
+        "evidence": {
+          "status_code": 404,
+          "body_bytes": 972
+        },
+        "ts": "2026-11-09T04:57:05.850959+00:00"
+      }
+    }
+
+[2026-11-09T04:57:06.496487+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T04:57:06.729872+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 403
+        },
+        "ts": "2026-11-09T04:57:06.729605+00:00"
+      }
+    }
+
+[2026-11-09T04:57:07.788607+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T04:57:07.830054+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 d5520f000f4a0fa31a9eed6094197e00.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "DFW56-P9",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T04:57:07.829800+00:00"
+      }
+    }
+
+[2026-11-09T04:57:08.783005+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T04:57:08.783427+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T04:57:09.400102+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T04:57:09.870327+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": true,
+        "evidence": {
+          "object_count": 9,
+          "missing_pages": [],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T04:57:09.867287+00:00"
+      }
+    }
+
+[2026-11-09T04:57:10.520876+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T04:57:10.521412+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": true,
+        "failed_checks": [],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T04:57:11.421069+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "7bd1d6ac",
+      "sender": "validator",
+      "status": "success",
+      "summary": "All deployment validation checks passed successfully including DNS, HTTPS, HTTP redirect, certificate, required pages, custom 404, S3 direct access denial, CloudFront headers, and bucket contents.",
+      "data": {
+        "all_passed": true,
+        "failed_checks": []
+      }
+    }
+
+[2026-11-09T05:17:34.989163+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T05:17:35.008521+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.225.222.107",
+            "13.225.222.97",
+            "13.225.222.106",
+            "13.225.222.49"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T05:17:35.008494+00:00"
+      }
+    }
+
+[2026-11-09T05:17:35.489132+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T05:17:35.644216+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T05:17:35.643892+00:00"
+      }
+    }
+
+[2026-11-09T05:17:36.222441+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T05:17:36.247376+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T05:17:36.246979+00:00"
+      }
+    }
+
+[2026-11-09T05:17:36.764140+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T05:17:36.808998+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T05:17:36.808005+00:00"
+      }
+    }
+
+[2026-11-09T05:17:37.275636+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T05:17:37.914116+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T05:17:37.913910+00:00"
+      }
+    }
+
+[2026-11-09T05:17:38.527047+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T05:17:38.773251+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": true,
+        "evidence": {
+          "status_code": 404,
+          "body_bytes": 972
+        },
+        "ts": "2026-11-09T05:17:38.773023+00:00"
+      }
+    }
+
+[2026-11-09T05:17:39.324982+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T05:17:39.546069+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 403
+        },
+        "ts": "2026-11-09T05:17:39.545869+00:00"
+      }
+    }
+
+[2026-11-09T05:17:40.209712+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T05:17:40.246464+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 172dc8aa232832d915bfef523820b050.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "DFW56-P9",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T05:17:40.246278+00:00"
+      }
+    }
+
+[2026-11-09T05:17:40.804409+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:17:40.805077+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T05:17:41.381241+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T05:17:41.769464+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": true,
+        "evidence": {
+          "object_count": 9,
+          "missing_pages": [],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T05:17:41.768250+00:00"
+      }
+    }
+
+[2026-11-09T05:17:42.495163+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:17:42.496789+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": true,
+        "failed_checks": [],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T05:17:43.208908+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "05f9da65",
+      "sender": "validator",
+      "status": "success",
+      "summary": "All site validation checks passed successfully, and the validation report was saved.",
+      "data": {
+        "all_passed": true,
+        "failed_checks": []
+      }
+    }
+
+[2026-11-09T05:20:21.806986+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T05:20:21.826408+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.225.222.49",
+            "13.225.222.107",
+            "13.225.222.106",
+            "13.225.222.97"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T05:20:21.826351+00:00"
+      }
+    }
+
+[2026-11-09T05:20:22.446001+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T05:20:22.505249+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T05:20:22.504682+00:00"
+      }
+    }
+
+[2026-11-09T05:20:23.083305+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T05:20:23.109785+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T05:20:23.109579+00:00"
+      }
+    }
+
+[2026-11-09T05:20:23.674982+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T05:20:23.713789+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T05:20:23.712992+00:00"
+      }
+    }
+
+[2026-11-09T05:20:24.245870+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T05:20:24.558054+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T05:20:24.557940+00:00"
+      }
+    }
+
+[2026-11-09T05:20:25.110654+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T05:20:25.246746+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": true,
+        "evidence": {
+          "status_code": 404,
+          "body_bytes": 972
+        },
+        "ts": "2026-11-09T05:20:25.246297+00:00"
+      }
+    }
+
+[2026-11-09T05:20:25.758028+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T05:20:25.919491+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": false,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 404
+        },
+        "ts": "2026-11-09T05:20:25.918760+00:00"
+      }
+    }
+
+[2026-11-09T05:20:26.455339+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T05:20:26.495781+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 03a73e1b6e4060871f1f3a943370e306.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "DFW56-P9",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T05:20:26.495595+00:00"
+      }
+    }
+
+[2026-11-09T05:20:27.118261+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:20:27.119147+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T05:20:27.647345+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T05:20:43.961513+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": false,
+        "evidence": {
+          "error": "NoSuchBucket('An error occurred (NoSuchBucket) when calling the ListObjectsV2 operation: The specified bucket does not exist')",
+          "attempts": 4
+        },
+        "ts": "2026-11-09T05:20:43.959804+00:00"
+      }
+    }
+
+[2026-11-09T05:20:44.677896+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:20:44.678551+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": false,
+        "failed_checks": [
+          "s3_direct_access_denied",
+          "bucket_has_site_files"
+        ],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T05:20:45.970460+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "86c60f03",
+      "sender": "validator",
+      "status": "failed",
+      "summary": "Most checks passed but there were failures with S3 direct access and the S3 bucket contents check.",
+      "data": {
+        "all_passed": false,
+        "failed_checks": [
+          "s3_direct_access_denied",
+          "bucket_has_site_files"
+        ],
+        "s3_direct_access_denied": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 404
+        },
+        "bucket_has_site_files": {
+          "error": "NoSuchBucket('An error occurred (NoSuchBucket) when calling the ListObjectsV2 operation: The specified bucket does not exist')",
+          "attempts": 4
+        }
+      }
+    }
+
+[2026-11-09T05:21:25.788429+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T05:21:25.822176+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.225.222.49",
+            "13.225.222.107",
+            "13.225.222.97",
+            "13.225.222.106"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T05:21:25.822158+00:00"
+      }
+    }
+
+[2026-11-09T05:21:26.619357+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T05:21:26.666020+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T05:21:26.665827+00:00"
+      }
+    }
+
+[2026-11-09T05:21:27.368343+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T05:21:27.395015+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T05:21:27.394841+00:00"
+      }
+    }
+
+[2026-11-09T05:21:27.951485+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T05:21:27.988591+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T05:21:27.987404+00:00"
+      }
+    }
+
+[2026-11-09T05:21:28.560947+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T05:21:28.754425+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T05:21:28.754327+00:00"
+      }
+    }
+
+[2026-11-09T05:21:29.347201+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T05:21:29.483603+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": false,
+        "evidence": {
+          "status_code": 403,
+          "body_bytes": 111
+        },
+        "ts": "2026-11-09T05:21:29.483395+00:00"
+      }
+    }
+
+[2026-11-09T05:21:30.062496+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T05:21:30.278619+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 403
+        },
+        "ts": "2026-11-09T05:21:30.278426+00:00"
+      }
+    }
+
+[2026-11-09T05:21:30.960770+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T05:21:30.998617+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 a3a495e79f7ccf2b46891b2bff5bdbe0.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "DFW56-P9",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T05:21:30.998415+00:00"
+      }
+    }
+
+[2026-11-09T05:21:31.771301+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:21:31.771685+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T05:21:32.397404+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T05:21:48.781061+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": false,
+        "evidence": {
+          "object_count": 0,
+          "missing_pages": [
+            "index.html",
+            "styles.html",
+            "recipe.html",
+            "builder.html",
+            "about.html"
+          ],
+          "attempts": 4
+        },
+        "ts": "2026-11-09T05:21:48.779479+00:00"
+      }
+    }
+
+[2026-11-09T05:21:49.393961+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:21:49.395706+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": false,
+        "failed_checks": [
+          "custom_404_page",
+          "bucket_has_site_files"
+        ],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T05:21:50.768527+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "49f20c84",
+      "sender": "validator",
+      "status": "failed",
+      "summary": "Validation completed with some failures. Custom 404 page did not return the expected 404 status and the S3 bucket is missing required site files.",
+      "data": {
+        "all_passed": false,
+        "failed_checks": [
+          "custom_404_page",
+          "bucket_has_site_files"
+        ],
+        "custom_404_page": {
+          "status_code": 403,
+          "body_bytes": 111
+        },
+        "bucket_has_site_files": {
+          "object_count": 0,
+          "missing_pages": [
+            "index.html",
+            "styles.html",
+            "recipe.html",
+            "builder.html",
+            "about.html"
+          ],
+          "attempts": 4
+        }
+      }
+    }
+
+[2026-11-09T05:22:34.378486+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T05:22:34.397652+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.225.222.107",
+            "13.225.222.97",
+            "13.225.222.106",
+            "13.225.222.49"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T05:22:34.397359+00:00"
+      }
+    }
+
+[2026-11-09T05:22:34.860753+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T05:22:34.916924+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T05:22:34.916711+00:00"
+      }
+    }
+
+[2026-11-09T05:22:35.482853+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T05:22:35.515628+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T05:22:35.515442+00:00"
+      }
+    }
+
+[2026-11-09T05:22:36.056334+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T05:22:36.119833+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T05:22:36.118819+00:00"
+      }
+    }
+
+[2026-11-09T05:22:36.612856+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T05:22:36.805634+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T05:22:36.805470+00:00"
+      }
+    }
+
+[2026-11-09T05:22:37.324999+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T05:22:37.514485+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": false,
+        "evidence": {
+          "status_code": 403,
+          "body_bytes": 111
+        },
+        "ts": "2026-11-09T05:22:37.513824+00:00"
+      }
+    }
+
+[2026-11-09T05:22:38.124181+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T05:22:38.346743+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 403
+        },
+        "ts": "2026-11-09T05:22:38.346313+00:00"
+      }
+    }
+
+[2026-11-09T05:22:38.945507+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T05:22:38.985509+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 219b6472d4496fcc311785bd1dd2943a.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "DFW56-P9",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T05:22:38.985301+00:00"
+      }
+    }
+
+[2026-11-09T05:22:39.514782+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:22:39.515667+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T05:22:40.170944+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T05:22:40.648765+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": true,
+        "evidence": {
+          "object_count": 9,
+          "missing_pages": [],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T05:22:40.647502+00:00"
+      }
+    }
+
+[2026-11-09T05:22:41.198404+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:22:41.199672+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": false,
+        "failed_checks": [
+          "custom_404_page"
+        ],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T05:22:42.117742+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "3d53275f",
+      "sender": "validator",
+      "status": "failed",
+      "summary": "All checks passed except the custom 404 page which returned a 403 status instead of 404.",
+      "data": {
+        "all_passed": false,
+        "failed_checks": [
+          "custom_404_page"
+        ],
+        "custom_404_page": {
+          "status_code": 403,
+          "body_bytes": 111
+        }
+      }
+    }
+
+[2026-11-09T05:23:21.289671+00:00] tool_call
+    {
+      "tool": "check_dns",
+      "args": {}
+    }
+
+[2026-11-09T05:23:21.298920+00:00] tool_result
+    {
+      "tool": "check_dns",
+      "error": false,
+      "output": {
+        "check": "dns_resolves",
+        "passed": true,
+        "evidence": {
+          "A": [
+            "13.225.222.107",
+            "13.225.222.97",
+            "13.225.222.106",
+            "13.225.222.49"
+          ],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T05:23:21.298900+00:00"
+      }
+    }
+
+[2026-11-09T05:23:22.012981+00:00] tool_call
+    {
+      "tool": "check_https_domain",
+      "args": {}
+    }
+
+[2026-11-09T05:23:22.061848+00:00] tool_result
+    {
+      "tool": "check_https_domain",
+      "error": false,
+      "output": {
+        "check": "https_domain_reachable",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000.me/",
+          "status_code": 200,
+          "tls_verified": true
+        },
+        "ts": "2026-11-09T05:23:22.061510+00:00"
+      }
+    }
+
+[2026-11-09T05:23:22.610910+00:00] tool_call
+    {
+      "tool": "check_http_redirect",
+      "args": {}
+    }
+
+[2026-11-09T05:23:22.639380+00:00] tool_result
+    {
+      "tool": "check_http_redirect",
+      "error": false,
+      "output": {
+        "check": "http_redirects_to_https",
+        "passed": true,
+        "evidence": {
+          "status_code": 301,
+          "location": "https://csce412xucol000.me/"
+        },
+        "ts": "2026-11-09T05:23:22.639171+00:00"
+      }
+    }
+
+[2026-11-09T05:23:23.187390+00:00] tool_call
+    {
+      "tool": "check_certificate",
+      "args": {}
+    }
+
+[2026-11-09T05:23:23.221368+00:00] tool_result
+    {
+      "tool": "check_certificate",
+      "error": false,
+      "output": {
+        "check": "certificate_matches_domain",
+        "passed": true,
+        "evidence": {
+          "san": [
+            "csce412xucol000.me",
+            "www.csce412xucol000.me"
+          ],
+          "not_after": "May 23 23:59:59 2027 GMT",
+          "tls_version": "TLSv1.3",
+          "issuer": "Amazon",
+          "hostname_verified_by_handshake": true
+        },
+        "ts": "2026-11-09T05:23:23.220483+00:00"
+      }
+    }
+
+[2026-11-09T05:23:23.792872+00:00] tool_call
+    {
+      "tool": "check_pages",
+      "args": {}
+    }
+
+[2026-11-09T05:23:24.002379+00:00] tool_result
+    {
+      "tool": "check_pages",
+      "error": false,
+      "output": {
+        "check": "required_pages_accessible",
+        "passed": true,
+        "evidence": {
+          "status_codes": {
+            "index.html": 200,
+            "styles.html": 200,
+            "recipe.html": 200,
+            "builder.html": 200,
+            "about.html": 200
+          }
+        },
+        "ts": "2026-11-09T05:23:24.002184+00:00"
+      }
+    }
+
+[2026-11-09T05:23:25.375716+00:00] tool_call
+    {
+      "tool": "check_custom_404",
+      "args": {}
+    }
+
+[2026-11-09T05:23:25.541919+00:00] tool_result
+    {
+      "tool": "check_custom_404",
+      "error": false,
+      "output": {
+        "check": "custom_404_page",
+        "passed": true,
+        "evidence": {
+          "status_code": 404,
+          "body_bytes": 972
+        },
+        "ts": "2026-11-09T05:23:25.541630+00:00"
+      }
+    }
+
+[2026-11-09T05:23:26.110009+00:00] tool_call
+    {
+      "tool": "check_s3_direct_denied",
+      "args": {}
+    }
+
+[2026-11-09T05:23:26.288998+00:00] tool_result
+    {
+      "tool": "check_s3_direct_denied",
+      "error": false,
+      "output": {
+        "check": "s3_direct_access_denied",
+        "passed": true,
+        "evidence": {
+          "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
+          "status_code": 403
+        },
+        "ts": "2026-11-09T05:23:26.288826+00:00"
+      }
+    }
+
+[2026-11-09T05:23:26.969540+00:00] tool_call
+    {
+      "tool": "check_cloudfront_headers",
+      "args": {}
+    }
+
+[2026-11-09T05:23:27.008877+00:00] tool_result
+    {
+      "tool": "check_cloudfront_headers",
+      "error": false,
+      "output": {
+        "check": "cloudfront_serves_content",
+        "passed": true,
+        "evidence": {
+          "status_code": 200,
+          "via": "1.1 190a8a8f1f4fdcfb90c190f02f23fc28.cloudfront.net (CloudFront)",
+          "x-cache": "Hit from cloudfront",
+          "x-amz-cf-pop": "DFW56-P9",
+          "server": "AmazonS3"
+        },
+        "ts": "2026-11-09T05:23:27.008524+00:00"
+      }
+    }
+
+[2026-11-09T05:23:27.583289+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:23:27.583774+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "error": "Report NOT saved. These checks have not been run yet: ['bucket_has_site_files']. Run every check, even if an earlier one failed, then save again."
+      }
+    }
+
+[2026-11-09T05:23:28.095211+00:00] tool_call
+    {
+      "tool": "check_bucket_contents",
+      "args": {}
+    }
+
+[2026-11-09T05:23:28.542983+00:00] tool_result
+    {
+      "tool": "check_bucket_contents",
+      "error": false,
+      "output": {
+        "check": "bucket_has_site_files",
+        "passed": true,
+        "evidence": {
+          "object_count": 9,
+          "missing_pages": [],
+          "attempts": 1
+        },
+        "ts": "2026-11-09T05:23:28.541412+00:00"
+      }
+    }
+
+[2026-11-09T05:23:29.481449+00:00] tool_call
+    {
+      "tool": "save_validation_report",
+      "args": {}
+    }
+
+[2026-11-09T05:23:29.484893+00:00] tool_result
+    {
+      "tool": "save_validation_report",
+      "error": false,
+      "output": {
+        "saved_to": "reports/validation_report.json",
+        "all_passed": true,
+        "failed_checks": [],
+        "checks_run": 9
+      }
+    }
+
+[2026-11-09T05:23:30.159185+00:00] result_returned
+    {
+      "to": "planner",
+      "task_id": "707b7cb9",
+      "sender": "validator",
+      "status": "success",
+      "summary": "All deployment validation checks passed successfully and the report was saved.",
+      "data": {
+        "all_passed": true,
+        "failed_checks": []
+      }
+    }
+

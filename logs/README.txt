@@ -1,171 +1,134 @@
-PROJECT 5 - AI AGENT EXECUTION LOGS
-====================================
+PROJECT 5 - AGENT EXECUTION LOGS
+================================
 
-Site under test : https://csce412xucol000.me  (CloudFront distribution in front of a
-                  private S3 bucket, csce412xucol000-site, with Origin Access Control)
-Run window      : 2026-11-09 00:56:50 UTC  ->  2026-11-09 01:00:43 UTC  (~4 minutes)
-Timestamps      : Every entry begins with an ISO-8601 UTC timestamp, so entries from
-                  different files can be merged into a single timeline by sorting on it.
+Project : Secure cloud website with a multi-agent AI system (CSCE 412)
+Site    : https://csce412xucol000.me
+Account : AWS account 612601323134, region us-east-1
+Bucket  : csce412xucol000-site        CloudFront distribution: E37IAC4D1SDFUR
 
+These logs record ONE run of the agent system: a failure-detection and recovery run on
+2026-11-09 from 01:30:29 to 01:34:57 UTC (2026-11-08, 7:30 pm to 7:35 pm US Central time).
+All timestamps in the files are UTC.
 
-1. OVERVIEW
------------
-These logs are from one live run of a multi-agent system that validates a cloud
-deployment, diagnoses failures, and repairs them under human approval.
-
-Before the run, the deployment was deliberately broken by deleting the S3 bucket that
-backs the site (the controlled failure experiment). The agents then detected the
-failure, found the root cause, proposed fixes, got human approval, applied the fixes
-and re-validated. The site was fully restored after three repair cycles.
-
-Agents:
-  planner        Coordinator. Sends tasks to the other agents, reads their results,
-                 decides the next step, and gets human approval before any fix is
-                 applied.
-  validator      Runs 9 live checks against the deployment (DNS, HTTPS, HTTP->HTTPS
-                 redirect, TLS certificate, required pages, custom 404 page, direct-S3
-                 access denied, CloudFront headers, bucket contents) and saves a report.
-  diagnostician  Uses read-only AWS inspection tools to find the root cause of failed
-                 checks. It proposes exactly ONE fix, with evidence and a risk rating.
-  deployer       Runs only the fix it was given (the tool name and arguments come
-                 from the planner) and reports what happened.
-  human          Records each human approval decision before a fix is applied.
+The files were written by the agent system itself while it ran. Every agent action, tool
+call, tool result, message between agents and human approval is logged by the program at the
+moment it happens. Nothing was typed in by hand. AWS keys, API keys and tokens are redacted
+automatically before anything is written to disk.
 
 
-2. LOG FILES
-------------
-  planner.log        Every task the planner sent (task_sent), plus the overall result
-                     of each validation round (validation_failed / validation_passed).
-                     Each task has an "id" that links it to a reply in another log.
+1. THE AGENTS
+-------------
+Four specialized AI agents run on one language model (OpenAI, selected with the OPENAI_MODEL
+environment variable). A Python orchestrator passes structured JSON messages between them.
+Agents never call each other directly.
 
-  validator.log      Each validation check: tool_call -> tool_result, with live
-                     evidence (status codes, DNS A records, certificate SANs and
-                     expiry, CloudFront headers, S3 object counts), plus
-                     save_validation_report and the validator's result_returned
-                     message to the planner.
+  Planner        Sends tasks to the other agents, reads their results, and decides what happens
+                 next (validate, diagnose, apply a fix, stop).
+  Deployer       Makes AWS changes with boto3 tools (bucket, file upload, bucket policy, ...).
+                 Sensitive tools need human approval.
+  Validator      Runs nine checks against the live site and records the evidence.
+  Diagnostician  Read-only. Investigates a failed check with AWS read tools, finds the cause
+                 and proposes ONE fix. It cannot change anything.
 
-  diagnostician.log  The read-only AWS inspection calls (get_distribution_summary,
-                     get_bucket_policy, get_public_access_block, list_bucket_objects),
-                     their output, and the diagnosis the model produced: root_cause,
-                     evidence, proposed_fix and risk.
-
-  deployer.log       The fix tools that were run (create_private_bucket, upload_site,
-                     apply_oac_bucket_policy), their output, and the deployer's
-                     result_returned report.
-
-  human.log          The human approval decisions (fix_approval) for each proposed
-                     fix, plus one extra tool-level approval record (see section 6).
-
-Entry types:
-  task_sent          planner -> agent message (action, description, payload, id)
-  result_returned    agent -> planner message (task_id, status, summary, data)
-  tool_call          an agent asks to run an executable tool
-  tool_result        that tool's real output ("error": false means the call itself
-                     ran; the result of the check is in "output")
-  fix_approval       a human decision on a proposed fix
-  validation_failed / validation_passed   the planner's verdict for each round
+Decided by the AI model: which tool to call next, what the evidence means, the diagnosis and
+the proposed fix.
+Decided by plain Python: every AWS call, every validation check and the evidence it records,
+the rule that a validation report cannot be saved until all nine checks have run, the human
+approval prompt, and the final pass or fail (taken from the saved report, not from model text).
 
 
-3. HOW AGENTS PASS INFORMATION
-------------------------------
-Messages are matched by ID: the "id" in a planner task_sent equals the "task_id" in
-the receiving agent's result_returned.
+2. THE LOG FILES
+----------------
+  01-planner-agent.log            Planner: each Task it sent (to the Validator, Diagnostician and
+                                  Deployer) and the validation outcomes it recorded
+                                  (validation_failed / validation_passed with attempt numbers).
+  02-deployer-agent.log           Deployer: each tool call with its arguments, the raw result,
+                                  and the summary returned to the Planner.
+  03-validator-agent.log          Validator: every check it ran, the evidence each check
+                                  recorded, and its summary to the Planner.
+  04-diagnostician-agent.log      Diagnostician: the read-only tools it used, what they returned,
+                                  and its diagnosis, evidence list and proposed fix.
+  05-agent-communication.log      VERBOSE record of every Task and Result message passed between
+                                  agents (20 messages: 10 Tasks, 10 Results), with full payloads.
+                                  If 05-agent-communication.jsonl is included, it holds the same
+                                  messages as one JSON object per line.
+  06-tool-execution.log           56 numbered tool executions. For each: requesting agent, tool,
+                                  arguments, request and finish times, error flag, raw result,
+                                  then the agent's summary and how the Planner used it.
+  07-failure-recovery.log         The failure and recovery sequence from the first failed
+                                  validation to the passing one, labeled by phase.
+  08-human-approvals.log          The human approvals (timestamped) given during recovery.
 
-The flow repeats once per repair cycle:
-
-  Planner --validate_deployment--> Validator
-  Validator --result_returned (failed_checks + evidence)--> Planner
-  Planner --diagnose_failure (failed_checks, fixes_already_tried)--> Diagnostician
-  Diagnostician --result_returned (root_cause, evidence, proposed_fix, risk)--> Planner
-  Planner --proposed_fix--> Human  (fix_approval: approved = true)
-  Planner --apply_fix (tool + args copied from proposed_fix)--> Deployer
-  Deployer --result_returned (status, data)--> Planner
-  Planner --validate_deployment--> Validator   (next round)
-
-Two things show one agent's output becoming the next agent's input:
-  - The validator's failed_checks and evidence are passed word for word as the
-    payload of the diagnose_failure task.
-  - The diagnostician's proposed_fix.tool becomes the payload.tool of the deployer's
-    apply_fix task.
-  - Every fix already applied is added to "fixes_already_tried", so the next
-    diagnosis takes earlier fixes into account.
-
-
-4. SEQUENCE OF THE DEMONSTRATED WORKFLOW (all times UTC, 2026-11-09)
---------------------------------------------------------------------
-ROUND 0 - Initial failure observed
-  00:56:50  planner -> validator          task 07e0c70a  validate_deployment
-  00:56:51-00:57:17  validator runs the checks. FAILED:
-              s3_direct_access_denied  (direct S3 URL returned 404, expected 403)
-              bucket_has_site_files    (NoSuchBucket after 4 attempts)
-            Note: the pages and the custom 404 still PASSED this round because
-            CloudFront was serving cached copies (x-cache: "Hit from cloudfront").
-  00:57:19  planner: validation_failed (attempt 0)
-  00:57:19  planner -> diagnostician      task 2a698f82  diagnose_failure
-  00:57:24  diagnostician: root cause = "The S3 bucket csce412xucol000-site does not
-            exist"; proposed fix = create_private_bucket; risk = low
-  00:57:54  human: fix_approval create_private_bucket -> approved
-  00:57:54  planner -> deployer           task 1a43464a  apply_fix
-  00:57:55  deployer: bucket created, public_access_blocked = true
-
-ROUND 1
-  00:58:26  planner -> validator          task 4592e35c
-  FAILED:   custom_404_page (403, expected 404), bucket_has_site_files (0 objects)
-  00:58:53  planner -> diagnostician      task e76b19df
-  00:58:55  diagnostician: root cause = the bucket contains no website files;
-            proposed fix = upload_site
-  00:59:05  human: fix_approval upload_site -> approved
-  00:59:05  planner -> deployer           task f93ee326
-  00:59:07  deployer: uploaded 9 objects
-
-ROUND 2
-  00:59:38  planner -> validator          task 924c0f87
-  FAILED:   custom_404_page (403); bucket_has_site_files now PASSES (9 objects)
-  00:59:48  planner -> diagnostician      task 18bdb88f
-  00:59:53  diagnostician: root cause = no bucket policy allowing CloudFront OAC to
-            read the private bucket; proposed fix = apply_oac_bucket_policy
-  01:00:01  human: fix_approval apply_oac_bucket_policy -> approved
-  01:00:01  planner -> deployer           task 3e4da98a
-  01:00:02  human: tool-level approval for apply_oac_bucket_policy ("pre-approved fix")
-  01:00:02  deployer: OAC bucket policy applied for the CloudFront distribution
-
-ROUND 3 - Final verification
-  01:00:34  planner -> validator          task 432bc49c
-  01:00:34-01:00:42  all 9 checks PASS (custom 404 returns 404 with the 972-byte
-            custom page; direct S3 access returns 403; 9 objects in the bucket)
-  01:00:43  planner: validation_passed (attempt 3)
+Record format: "[UTC timestamp] event" followed by the data as indented JSON. Common events:
+task_sent, result_returned, tool_call, tool_result, validation_failed, validation_passed,
+fix_approval, approval.
 
 
-5. WHERE EACH GRADING REQUIREMENT IS SHOWN
-------------------------------------------
-  Agent execution records     planner.log, validator.log, diagnostician.log,
-                              deployer.log (agent, task input, model analysis,
-                              result, timestamps)
-  Agent-to-agent comm.        task_sent in planner.log <-> result_returned in the
-                              other logs, linked by id / task_id (section 3)
-  Tool execution & results    validator.log (live HTTP/DNS/TLS/S3 checks),
-                              diagnostician.log (AWS read APIs), deployer.log (AWS
-                              write operations). Results were validated by
-                              re-running the validator after every fix. Also,
-                              save_validation_report refuses to save until every
-                              check has run (see the "Report NOT saved" entries).
-  Failure diagnosis/recovery  Section 4, Rounds 0-3, across all five logs
-  Human approval              human.log
+3. WORKFLOW SEQUENCE
+--------------------
+Starting condition: the S3 bucket csce412xucol000-site did not exist (NoSuchBucket), while
+the CloudFront distribution, DNS records and certificate were still in place. CloudFront was
+still serving cached copies of the pages, so the website checks that go through CloudFront
+passed while the checks that read the bucket directly failed.
+[Describe in your own words how this failure was introduced and at what time.]
+
+Round 1 - bucket missing
+  01:30:30  Planner -> Validator   validate_deployment (task 3a11c0e3)
+  01:30:32  Validator ran check_dns, check_https_domain, check_http_redirect,
+            check_certificate, check_pages, check_custom_404, check_s3_direct_denied,
+            check_cloudfront_headers. It tried to save its report; save_validation_report
+            REFUSED because check_bucket_contents had not run. It then ran it.
+  01:31:00  FAILURE OBSERVED: s3_direct_access_denied (direct S3 request returned 404) and
+            bucket_has_site_files (NoSuchBucket after 4 attempts). Planner logs
+            validation_failed (attempt 0).
+  01:31:00  Planner -> Diagnostician   diagnose_failure (task 7c3682e7, fixes_already_tried: [])
+            Diagnostician used get_distribution_summary, get_bucket_policy,
+            get_public_access_block and list_bucket_objects. Three returned NoSuchBucket.
+  01:31:07  DIAGNOSIS: the S3 bucket does not exist. PROPOSED FIX: create_private_bucket
+            (risk low).
+  01:31:29  HUMAN APPROVAL of the fix (approved: true).
+  01:31:29  Planner -> Deployer   apply_fix create_private_bucket (task 51336fc0)
+  01:31:30  RECOVERY: Deployer ran create_private_bucket -> created: true,
+            public_access_blocked: true.
+
+Round 2 - bucket empty
+  01:32:01  Planner -> Validator   validate_deployment (task fb80a8a4)
+  01:32:29  FAILED: custom_404_page (status 403) and bucket_has_site_files (object_count 0,
+            all five pages missing). validation_failed (attempt 1).
+  01:32:29  Planner -> Diagnostician   (task 5bfb3119, fixes_already_tried: create_private_bucket)
+  01:32:31  DIAGNOSIS: the bucket is empty (list_bucket_objects: count 0).
+            PROPOSED FIX: upload_site (risk low).
+  01:33:22  HUMAN APPROVAL (approved: true).
+  01:33:22  Planner -> Deployer   apply_fix upload_site (task f5ee6443)
+  01:33:23  RECOVERY: Deployer ran upload_site -> uploaded_count 9: 404.html, about.html,
+            builder.html, css/style.css, images/bowl.svg, index.html, js/main.js, recipe.html,
+            styles.html.
+
+Round 3 - bucket policy missing
+  01:33:56  Planner -> Validator   validate_deployment (task b80f2400)
+  01:34:07  FAILED: custom_404_page (status 403). bucket_has_site_files now passed
+            (9 objects). validation_failed (attempt 2).
+  01:34:07  Planner -> Diagnostician   (task bda8c382, fixes_already_tried: create_private_bucket,
+            upload_site)
+  01:34:12  DIAGNOSIS: the bucket has no policy (get_bucket_policy: policy null), so CloudFront
+            cannot read or list it. PROPOSED FIX: apply_oac_bucket_policy (risk low).
+  01:34:14  HUMAN APPROVAL (approved: true), plus the sensitive-tool approval gate at 01:34:15.
+  01:34:14  Planner -> Deployer   apply_fix apply_oac_bucket_policy (task 289e32df)
+  01:34:15  RECOVERY: Deployer ran apply_oac_bucket_policy -> applied for distribution
+            E37IAC4D1SDFUR.
+
+Round 4 - final verification
+  01:34:47  Planner -> Validator   validate_deployment (task 2e8c7ac2)
+  01:34:57  VERIFIED: all nine checks passed (all_passed: true, checks_run: 9). Planner logs
+            validation_passed (attempt 3). Incident resolved.
+
+The nine checks: dns_resolves, https_domain_reachable, http_redirects_to_https,
+certificate_matches_domain, required_pages_accessible, custom_404_page,
+s3_direct_access_denied, cloudfront_serves_content, bucket_has_site_files.
+
+Note on the validation guard: in every round the Validator tried to save its report before
+running bucket_has_site_files, and save_validation_report refused each time ("Report NOT
+saved. These checks have not been run yet") until all nine checks had run. This happened four
+times (see 03-validator-agent.log and 06-tool-execution.log).
 
 
-6. NOTES
---------
-  - Tool arguments show as "args": {} because the tools read their targets (bucket
-    name, distribution ID, domain, site folder) from the project configuration
-    instead of taking them as arguments. The resolved values appear in each
-    tool's output (for example the bucket name, distribution ID and URLs).
-  - human.log has two kinds of approval. "fix_approval" is the planner-level
-    approval of each diagnosed fix. "approval" (01:00:02) is a second gate at the
-    moment the tool runs. In this system that gate only applies to
-    apply_oac_bucket_policy, because it changes access permissions; the earlier
-    approval was reused ("pre-approved fix").
-  - Sensitive data: the logs contain no access keys, secret keys or session tokens.
-    The AWS account ID inside ARNs has been replaced with
-    [REDACTED-ACCOUNT-ID].
-  - The logs are the system's own output and were not edited, apart from the
-    redaction above and removing upload prefixes from the file names.
