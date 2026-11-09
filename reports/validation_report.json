@@ -1,6 +1,6 @@
 {
   "domain": "csce412xucol000.me",
-  "generated": "2026-11-08T23:58:13.300252+00:00",
+  "generated": "2026-11-09T00:46:44.444494+00:00",
   "all_passed": true,
   "failed_checks": [],
   "results": [
@@ -10,13 +10,13 @@
       "evidence": {
         "A": [
           "13.32.104.14",
+          "13.32.104.91",
           "13.32.104.66",
-          "13.32.104.68",
-          "13.32.104.91"
+          "13.32.104.68"
         ],
         "attempts": 1
       },
-      "ts": "2026-11-08T23:58:04.229331+00:00"
+      "ts": "2026-11-09T00:46:35.808631+00:00"
     },
     {
       "check": "https_domain_reachable",
@@ -26,7 +26,7 @@
         "status_code": 200,
         "tls_verified": true
       },
-      "ts": "2026-11-08T23:58:05.166737+00:00"
+      "ts": "2026-11-09T00:46:36.471453+00:00"
     },
     {
       "check": "http_redirects_to_https",
@@ -35,7 +35,7 @@
         "status_code": 301,
         "location": "https://csce412xucol000.me/"
       },
-      "ts": "2026-11-08T23:58:05.945460+00:00"
+      "ts": "2026-11-09T00:46:37.238963+00:00"
     },
     {
       "check": "certificate_matches_domain",
@@ -50,7 +50,7 @@
         "issuer": "Amazon",
         "hostname_verified_by_handshake": true
       },
-      "ts": "2026-11-08T23:58:06.628760+00:00"
+      "ts": "2026-11-09T00:46:38.019137+00:00"
     },
     {
       "check": "required_pages_accessible",
@@ -64,7 +64,7 @@
           "about.html": 200
         }
       },
-      "ts": "2026-11-08T23:58:08.203692+00:00"
+      "ts": "2026-11-09T00:46:39.204186+00:00"
     },
     {
       "check": "custom_404_page",
@@ -73,7 +73,7 @@
         "status_code": 404,
         "body_bytes": 972
       },
-      "ts": "2026-11-08T23:58:09.372305+00:00"
+      "ts": "2026-11-09T00:46:40.155593+00:00"
     },
     {
       "check": "s3_direct_access_denied",
@@ -82,28 +82,29 @@
         "url": "https://csce412xucol000-site.s3.us-east-1.amazonaws.com/index.html",
         "status_code": 403
       },
-      "ts": "2026-11-08T23:58:10.182841+00:00"
+      "ts": "2026-11-09T00:46:41.043170+00:00"
     },
     {
       "check": "cloudfront_serves_content",
       "passed": true,
       "evidence": {
         "status_code": 200,
-        "via": "1.1 29179c20f7f914eb50741e34bf1339ea.cloudfront.net (CloudFront)",
+        "via": "1.1 45079c4613eb44d010e4b888c230fb54.cloudfront.net (CloudFront)",
         "x-cache": "Hit from cloudfront",
         "x-amz-cf-pop": "IAH50-P5",
         "server": "AmazonS3"
       },
-      "ts": "2026-11-08T23:58:10.869853+00:00"
+      "ts": "2026-11-09T00:46:41.888681+00:00"
     },
     {
       "check": "bucket_has_site_files",
       "passed": true,
       "evidence": {
         "object_count": 9,
-        "missing_pages": []
+        "missing_pages": [],
+        "attempts": 1
       },
-      "ts": "2026-11-08T23:58:12.639603+00:00"
+      "ts": "2026-11-09T00:46:43.678287+00:00"
     }
   ]
 }

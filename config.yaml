@@ -9,4 +9,4 @@ pages: [index.html, styles.html, recipe.html, builder.html, about.html]
 error_page: 404.html
 logs_dir: logs
 reports_dir: reports
-max_fix_attempts: 2
+max_fix_attempts: 4

@@ -38,6 +38,8 @@ class System:
         llm = llm or LLM(cfg["model"])
         aws = aws or AwsTools(cfg)
         checker = checker or Checker(cfg)
+        self.checker = checker
+        self.tried_fixes = []
         self.bus = MessageBus(self.logger)
         self.planner = Planner(llm, self.logger, cfg["model"])
         self.deployer = build_deployer(aws, llm, self.logger)
@@ -55,6 +57,11 @@ class System:
                 f"for the certificate. Finish by validating the deployment.")
         tasks = self.planner.plan(goal, list(self.deployer.tools))
         for task in tasks:
+            if task.recipient == "validator":
+                # Re-running a failed validation never fixes anything, so validation is handled
+                # by validate_and_heal() below (validate -> diagnose -> approve -> fix -> re-check).
+                self.logger.log("planner", "validation_deferred", {"task": task.action})
+                continue
             for attempt in range(MAX_RETRIES + 1):
                 result = self.bus.dispatch(task)
                 decision = self.planner.review(task, result)
@@ -64,8 +71,7 @@ class System:
                     self.logger.log("planner", "deployment_aborted",
                                     {"task": task.action, "reason": decision["reason"]})
                     return False
-        report = self.read_report()
-        return bool(report and report["all_passed"])
+        return self.validate_and_heal()
 
     # ---------------------------------------------------------------- validate
     def read_report(self):
@@ -76,6 +82,11 @@ class System:
             return json.load(f)
 
     def run_validation(self):
+        self.checker.reset()            # fresh results every round: nothing carried over
+        try:
+            os.remove(os.path.join(self.cfg.get("reports_dir", "reports"), "validation_report.json"))
+        except FileNotFoundError:
+            pass
         task = Task("planner", "validator", "validate_deployment",
                     "Run all validation checks against the live site and save the report.")
         self.bus.dispatch(task)
@@ -94,13 +105,24 @@ class System:
             if attempt >= max_fix:
                 break
 
-            diag = self.bus.dispatch(Task(
-                "planner", "diagnostician", "diagnose_failure",
-                "Find the root cause of these failed checks and propose ONE fix.",
-                {"failed_checks": failed}))
-            fix = (diag.data or {}).get("proposed_fix")
-            if not diag.ok or not fix or fix.get("tool") not in FIXABLE_TOOLS:
-                self.logger.log("planner", "no_usable_fix", {"diagnosis": diag.data})
+            # Ask the Diagnostician up to 3 times: a malformed or unusable answer must not end
+            # the recovery. Each unusable answer is logged, then it is asked again.
+            diag, fix = None, None
+            note = ""
+            for diag_try in range(1, 4):
+                diag = self.bus.dispatch(Task(
+                    "planner", "diagnostician", "diagnose_failure",
+                    "Find the root cause of these failed checks and propose ONE fix." + note,
+                    {"failed_checks": failed, "fixes_already_tried": self.tried_fixes}))
+                fix = (diag.data or {}).get("proposed_fix")
+                if diag.ok and fix and fix.get("tool") in FIXABLE_TOOLS:
+                    break
+                self.logger.log("planner", "no_usable_fix",
+                                {"diag_try": diag_try, "diagnosis": diag.data})
+                note = (" Your previous answer had no usable proposed_fix. Reply with valid JSON "
+                        "whose proposed_fix.tool is exactly one of the allowed Deployer tools.")
+                fix = None
+            if not fix:
                 return False
 
             print("\n" + "=" * 60)
@@ -114,6 +136,7 @@ class System:
             if not ok:
                 return False
 
+            self.tried_fixes.append({"tool": fix["tool"], "args": fix.get("args", {})})
             approval.grant(fix["tool"])
             try:
                 res = self.bus.dispatch(Task(
@@ -124,7 +147,9 @@ class System:
             finally:
                 approval.clear_grants()
             if not res.ok:
-                return False
+                self.logger.log("planner", "fix_failed", {"fix": fix, "result": res.summary})
+                print("The fix did not succeed; re-validating and trying again if attempts remain.")
+                continue
             print("Fix applied. Waiting 30s for CloudFront/DNS to settle, then re-validating...")
             time.sleep(30)
         return False

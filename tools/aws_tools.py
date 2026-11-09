@@ -39,14 +39,7 @@ class AwsTools:
         if not z:
             raise RuntimeError("No Route 53 hosted zone for domain; run ensure_hosted_zone first")
         return z["Id"].split("/")[-1]
-    def list_bucket_objects(self):
-        """List the keys in the site bucket (read-only)."""
-        try:
-            resp = self.s3.list_objects_v2(Bucket=self.bucket)
-            keys = [o["Key"] for o in resp.get("Contents", [])]
-            return {"count": len(keys), "keys": sorted(keys)}
-        except ClientError as e:
-            return {"error": e.response["Error"]["Code"]}
+
     def _find_cert_arn(self):
         pages = self.acm.get_paginator("list_certificates").paginate(
             CertificateStatuses=["PENDING_VALIDATION", "ISSUED"])
@@ -122,9 +115,30 @@ class AwsTools:
             "AliasTarget": {"HostedZoneId": CLOUDFRONT_ALIAS_ZONE,
                             "DNSName": d["DomainName"], "EvaluateTargetHealth": False}}}
             for t in ("A", "AAAA")]
-        return {"change_id": self._change(changes), "target": d["DomainName"]}
+        change_id = self._change(changes)
+        status, deadline = "PENDING", time.time() + 120
+        while time.time() < deadline:      # Route 53 needs up to ~60s to publish a change
+            status = self.r53.get_change(Id=change_id)["ChangeInfo"]["Status"]
+            if status == "INSYNC":
+                break
+            time.sleep(5)
+        return {"change_id": change_id, "target": d["DomainName"], "status": status}
 
     # ------------------------------------------------------------------- S3
+    def _retry_s3(self, fn, tries=8, delay=3):
+        """A brand-new (or re-created) bucket can answer NoSuchBucket for a few seconds."""
+        last = None
+        for i in range(tries):
+            try:
+                return fn()
+            except ClientError as e:
+                last = e
+                if e.response["Error"]["Code"] not in ("NoSuchBucket", "OperationAborted",
+                                                       "NoSuchKey", "404"):
+                    raise
+                time.sleep(delay)
+        raise last
+
     def create_private_bucket(self):
         """Create the bucket (if missing) with ALL public access blocked."""
         exists = True
@@ -136,15 +150,18 @@ class AwsTools:
             kwargs = {"Bucket": self.bucket}
             if self.region != "us-east-1":
                 kwargs["CreateBucketConfiguration"] = {"LocationConstraint": self.region}
-            self.s3.create_bucket(**kwargs)
-        self.s3.put_public_access_block(
+            self._retry_s3(lambda: self.s3.create_bucket(**kwargs))
+            # wait until S3 reports the bucket as existing before configuring it
+            self.s3.get_waiter("bucket_exists").wait(
+                Bucket=self.bucket, WaiterConfig={"Delay": 3, "MaxAttempts": 20})
+        self._retry_s3(lambda: self.s3.put_public_access_block(
             Bucket=self.bucket,
             PublicAccessBlockConfiguration={
                 "BlockPublicAcls": True, "IgnorePublicAcls": True,
-                "BlockPublicPolicy": True, "RestrictPublicBuckets": True})
-        self.s3.put_bucket_ownership_controls(
+                "BlockPublicPolicy": True, "RestrictPublicBuckets": True}))
+        self._retry_s3(lambda: self.s3.put_bucket_ownership_controls(
             Bucket=self.bucket,
-            OwnershipControls={"Rules": [{"ObjectOwnership": "BucketOwnerEnforced"}]})
+            OwnershipControls={"Rules": [{"ObjectOwnership": "BucketOwnerEnforced"}]}))
         return {"bucket": self.bucket, "created": not exists, "public_access_blocked": True}
 
     def upload_site(self):
@@ -160,6 +177,15 @@ class AwsTools:
                 self.s3.upload_file(path, self.bucket, key, ExtraArgs={"ContentType": ctype})
                 uploaded.append(key)
         return {"uploaded_count": len(uploaded), "keys": sorted(uploaded)}
+
+    def list_bucket_objects(self):
+        """List the keys in the site bucket (read-only)."""
+        try:
+            resp = self.s3.list_objects_v2(Bucket=self.bucket)
+            keys = [o["Key"] for o in resp.get("Contents", [])]
+            return {"count": len(keys), "keys": sorted(keys)}
+        except ClientError as e:
+            return {"error": e.response["Error"]["Code"]}
 
     def get_public_access_block(self):
         try:

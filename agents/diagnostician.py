@@ -12,13 +12,15 @@ Reasoning hints:
 - 403/404 only on "/" -> check default_root_object.
 - Domain does not resolve / wrong target -> list_dns_records (missing A/AAAA alias to CloudFront).
 - TLS errors -> certificate status and the distribution's certificate/aliases.
-- Always gather evidence with tools BEFORE concluding. Do not guess.
 - get_bucket_policy or get_public_access_block returns NoSuchBucket, or direct-S3 returns 404
   with a NoSuchBucket error -> the bucket itself is missing. Propose create_private_bucket.
   Do NOT propose create_distribution: the distribution already exists and the tool only reuses it.
-- Bucket exists but is empty, or pages return 404 while the bucket policy is correct -> propose
-  upload_site.
+- bucket_has_site_files fails, or list_bucket_objects shows missing pages -> the files were never
+  uploaded to the bucket. Propose upload_site.
 - Propose create_distribution only if get_distribution_summary shows no distribution exists.
+- The task payload has "fixes_already_tried". Do NOT propose the same fix again unless new
+  evidence shows it did not run. If a tried fix did not solve the problem, find the next cause.
+- Always gather evidence with tools BEFORE concluding. Do not guess.
 
 The proposed fix must use exactly one of these Deployer tools:
 apply_oac_bucket_policy (no args), upsert_alias_records (no args),
@@ -37,9 +39,9 @@ def build_diagnostician(aws, llm, logger) -> Agent:
     tools = [
         make_tool(aws.get_bucket_policy, "Read the S3 bucket policy (returns policy=null if none)."),
         make_tool(aws.get_public_access_block, "Read S3 Block Public Access settings."),
+        make_tool(aws.list_bucket_objects, "List the files stored in the site bucket."),
         make_tool(aws.get_distribution_summary, "Read CloudFront settings: aliases, root object, origins/OAC, errors, cert."),
         make_tool(aws.list_dns_records, "List Route 53 records for the domain."),
         make_tool(aws.get_certificate_status, "Read ACM certificate status."),
-        make_tool(aws.list_bucket_objects, "List the files stored in the site bucket."),
     ]
     return Agent("diagnostician", SYSTEM, tools, llm, logger, max_steps=15)

@@ -27,6 +27,12 @@ class Checker:
         self.results = []
         self._remove_stale_report()      # an old report must never be mistaken for a new one
 
+    def reset(self):
+        """Forget every earlier result. Called before each validation round so a check that
+        is skipped or fails to run can never be satisfied by an OLD result."""
+        self.results = []
+        self._remove_stale_report()
+
     def _report_path(self):
         return os.path.join(self.cfg.get("reports_dir", "reports"), "validation_report.json")
 
@@ -113,18 +119,29 @@ class Checker:
         except Exception as e:
             return self._record("s3_direct_access_denied", False, {"url": url, "error": repr(e)})
 
-    # 9: the ORIGIN really holds the site files (CloudFront's cache can hide an empty bucket)
+    # 9: the ORIGIN really holds the site files (CloudFront's cache can hide an empty bucket).
+    # A new or just-filled bucket can lag for a few seconds, so retry before failing.
     def check_bucket_contents(self):
-        try:
-            session = boto3.Session(profile_name=self.cfg.get("aws_profile"))
-            s3 = session.client("s3", region_name=self.cfg.get("region", "us-east-1"))
-            resp = s3.list_objects_v2(Bucket=self.cfg["bucket"])
-            keys = {o["Key"] for o in resp.get("Contents", [])}
-            missing = [p for p in self.cfg["pages"] if p not in keys]
-            return self._record("bucket_has_site_files", not missing,
-                                {"object_count": len(keys), "missing_pages": missing})
-        except Exception as e:
-            return self._record("bucket_has_site_files", False, {"error": repr(e)})
+        tries = int(self.cfg.get("bucket_retries", 4))
+        delay = int(self.cfg.get("bucket_retry_delay", 5))
+        evidence = {}
+        for attempt in range(1, tries + 1):
+            try:
+                session = boto3.Session(profile_name=self.cfg.get("aws_profile"))
+                s3 = session.client("s3", region_name=self.cfg.get("region", "us-east-1"))
+                keys = set()
+                for page in s3.get_paginator("list_objects_v2").paginate(Bucket=self.cfg["bucket"]):
+                    keys |= {o["Key"] for o in page.get("Contents", [])}
+                missing = [p for p in self.cfg["pages"] if p not in keys]
+                evidence = {"object_count": len(keys), "missing_pages": missing,
+                            "attempts": attempt}
+                if not missing:
+                    return self._record("bucket_has_site_files", True, evidence)
+            except Exception as e:
+                evidence = {"error": repr(e), "attempts": attempt}
+            if attempt < tries:
+                time.sleep(delay)
+        return self._record("bucket_has_site_files", False, evidence)
 
     # 7: content is really served by CloudFront
     def check_cloudfront_headers(self):

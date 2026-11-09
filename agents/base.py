@@ -44,17 +44,25 @@ class LLM:
 
     def chat(self, system, messages, tools=None):
         """One turn of a tool-calling conversation. Returns the assistant message."""
-        kwargs = dict(model=self.model, temperature=0,
+        kwargs = dict(model=self.model,
                       messages=[{"role": "system", "content": system}] + messages)
         if tools:
             kwargs["tools"] = tools
             kwargs["parallel_tool_calls"] = False    # keep dependent AWS steps strictly ordered
-        return self.client.chat.completions.create(**kwargs).choices[0].message
+        try:
+            return self.client.chat.completions.create(**kwargs).choices[0].message
+        except Exception as e:
+            # Some (reasoning) models reject parallel_tool_calls. Retry without it; the agent
+            # loop still runs multiple tool calls one at a time, in order.
+            if "parallel_tool_calls" in str(e) and "parallel_tool_calls" in kwargs:
+                del kwargs["parallel_tool_calls"]
+                return self.client.chat.completions.create(**kwargs).choices[0].message
+            raise
 
     def complete_json(self, system, user) -> str:
         """Single JSON-mode completion (no tools). Used by the Planner."""
         r = self.client.chat.completions.create(
-            model=self.model, temperature=0, response_format={"type": "json_object"},
+            model=self.model, response_format={"type": "json_object"},
             messages=[{"role": "system", "content": system}, {"role": "user", "content": user}])
         return r.choices[0].message.content
 
@@ -67,15 +75,20 @@ Use "denied" if a tool returned status denied_by_human. Never claim success with
 
 
 def extract_json(text: str):
+    """Find the first valid JSON object in the text (ignores prose or extra braces around it)."""
     if not text:
         return None
-    start, end = text.find("{"), text.rfind("}")
-    if start == -1 or end <= start:
-        return None
-    try:
-        return json.loads(text[start:end + 1])
-    except json.JSONDecodeError:
-        return None
+    dec = json.JSONDecoder()
+    pos = text.find("{")
+    while pos != -1:
+        try:
+            obj, _ = dec.raw_decode(text, pos)
+            if isinstance(obj, dict):
+                return obj
+        except json.JSONDecodeError:
+            pass
+        pos = text.find("{", pos + 1)
+    return None
 
 
 class Agent:
@@ -90,6 +103,7 @@ class Agent:
     def run(self, task: Task) -> Result:
         messages = [{"role": "user", "content": task.to_json()}]
         specs = [t.spec() for t in self.tools.values()]
+        retried_format = False
         for _ in range(self.max_steps):
             msg = self.llm.chat(self.system_prompt, messages, specs)
 
@@ -124,6 +138,16 @@ class Agent:
                 continue
 
             parsed = extract_json(msg.content or "")
+            if not parsed and not retried_format:
+                # Ask the model once to resend its answer as valid JSON before giving up.
+                retried_format = True
+                self.logger.log(self.name, "invalid_json_retry", {"raw": (msg.content or "")[:500]})
+                messages.append({"role": "assistant", "content": msg.content or ""})
+                messages.append({"role": "user", "content":
+                                 "Your last reply was not one valid JSON object. Reply again with "
+                                 "ONLY the single JSON object described in your instructions: "
+                                 "no prose, no code fences, exactly one proposed fix."})
+                continue
             if not parsed:
                 return Result(task.id, self.name, "failed", "agent did not return valid JSON",
                               {"raw": (msg.content or "")[:500]})
